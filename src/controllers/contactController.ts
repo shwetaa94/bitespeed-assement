@@ -1,42 +1,22 @@
-import { Request, Response } from 'express';
-import prisma from '../prisma';
+import { PrismaClient } from "@prisma/client";
+import { Request, Response } from "express";
+import { z } from "zod";
 
-export const identifyContact = async (req: Request, res: Response) => {
-  const { email, phoneNumber } = req.body;
+const prisma = new PrismaClient();
 
-  try {
-    const existingContacts = await prisma.contact.findMany({
-      where: {
-        OR: [
-          { email: email },
-          { phoneNumber: phoneNumber }
-        ]
-      }
+const bodySchema = z.object({
+  email: z.string().email().optional(),
+  phoneNumber: z.string().optional(),
+});
+
+export const identifyContact = async(req: Request, res: Response)=>{
+  const { success } = bodySchema.safeParse(req.body);
+  if (!success) {
+    return res.status(400).json({
+      error: "Invalid request body",
+      message: "Enter inputs in correct syntax",
     });
-
-     if(!existingContacts){
-      const newContact = await prisma.contact.create({
-        data: {
-          email: email,
-          phoneNumber: phoneNumber,
-          linkPrecedence: 'primary'
-        }
-      });
-
-      res.json({
-        contact: {
-          primaryContatctId: newContact.id,
-          emails: [newContact.email],
-          phoneNumbers: [newContact.phoneNumber],
-          secondaryContactIds: []
-        }
-      });
-    }
-    else {
-
-    }
-  } catch (err) {
-    console.error('Error identifying contact:', err);
-    res.status(500).send('Internal Server Error');
   }
-};
+  res.send("hello")
+}
+
