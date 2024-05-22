@@ -172,10 +172,3 @@ The `identifyContact` function processes incoming contact requests based on the 
 
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
-## License
-
-This project is licensed under the MIT License.
-
----
-
-This README file provides a comprehensive overview of your project, including installation steps, an explanation of the identify contact logic, an example, API details, and contribution guidelines.
